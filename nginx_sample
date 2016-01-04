@@ -1,0 +1,25 @@
+server {
+        listen 80;
+
+        server_name [yourdomain];
+        root /var/www/dilbert;
+        error_log /var/log/nginx/dilbert_e.log;
+        access_log /var/log/nginx/dilbert_a.log;
+
+        location / {
+                rewrite ^/([0-9]*)[/]?$                      /index.php?y=$1&m=1&d=1 last;
+                rewrite ^/([0-9]*)/([0-9]*)[/]?$             /index.php?y=$1&m=$2&d=1 last;
+                rewrite ^/([0-9]*)/([0-9]*)/([0-9]*)[/]?$    /index.php?y=$1&m=$2&d=$3 last;
+                rewrite ^/i/([0-9]*)/([0-9]*)/([0-9]*)[/]?$  /img.php?y=$1&m=$2&d=$3 last;
+                index index.php;
+        }
+
+        location ~ \.php$ {
+                try_files $uri =404;
+                include /etc/nginx/fastcgi_params;               
+                fastcgi_pass unix:/var/run/php5-fpm.sock;       
+                fastcgi_index index.php;
+                fastcgi_param SCRIPT_FILENAME /var/www/dilbert$fastcgi_script_name;
+        }
+
+}
