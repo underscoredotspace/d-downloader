@@ -1,0 +1,17 @@
+#!/usr/bin/perl
+
+$date2get = $ARGV[0];
+$spec_addr = " http://dilbert.com/strips/comic/" . $date2get ."/";
+
+$date2get =~ s/\-/\//;
+$filename = $date2get . "z.";
+
+print "Content-type: text/html\n\n";
+
+$user_agent = "-A \"Mozilla/5.0 (Macintosh; U; Intel Mac OS X; en-us) AppleWebKit/523.10.6 (KHTML, like Gecko) Version/3.0.4 Safari/523.10.6\"";
+$rootpath = "/home/operator11/dilbarch/";
+$dilbert = readpipe "usewithtor curl " . $user_agent . $spec_addr;
+$dilbert =~ /(\/dyn\/str_strip.+\.strip.zoom.(jpg|gif))/;
+$getfile = $1; $ext = $2;
+
+$dum = system("usewithtor curl " . $user_agent . " --output " . $rootpath . $filename . $ext . " http://www.dilbert.com" . $getfile);
